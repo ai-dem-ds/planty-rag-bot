@@ -1,0 +1,12 @@
+.env
+local_storage/
+__pycache__/
+.ipynb_checkpoints/
+.streamlit/secrets.toml
+*.pyc
+.DS_Store
+
+evaluation/evaluation_results/
+evaluation/evaluation_vector_stores/
+evaluation/evaluation_embedding_models/
+notebooks/
