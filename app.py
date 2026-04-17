@@ -29,6 +29,7 @@
 #-------------------------------------------------
 
 import streamlit as st
+import pathlib as Path
 
 from src.engine import get_chat_engine
 from src.model_loader import initialise_llm, get_embedding_model
@@ -114,34 +115,54 @@ if st.button("Ask Planty 🌿"):
         st.warning("Please enter a question first.")
 #-------------------------------------------------
 
-# meta questions
-meta_questions = [
-    "who are you",
-    "what are you",
-    "what can you do",
-    "what can you help me with",
-    "which plants do you know",
-    "what plants do you know",
-    "what information do you have",
-    "tell me about yourself"
-]
+def get_available_plants() -> list[str]:
+    data_path = Path("data")
+    plant_names = []
+
+    for file in sorted(data_path.glob("*.txt")):
+        name = file.stem.replace("_", " ").title()
+        plant_names.append(name)
+    
+    return plant_names
+
+#-------------------------------------------------
 
 user_input_lower = user_input.lower().strip()
 
-if any(q in user_input_lower for q in meta_questions):
+if (
+    "which plants do you know" in user_input_lower
+    or "what plants do you know" in user_input_lower
+    or "what flowers do you know" in user_input_lower
+    or "what herbs do you know" in user_input_lower
+    or "what information do you have" in user_input_lower
+):
+    plant_names = get_available_plants()
+    response = (
+        "I currently have information about the following plants, herbs, flowers, crops, and trees:\n\n- "
+        + "\n- ".join(plant_names)
+    )
+
+elif (
+    "who are you" in user_input_lower
+    or "what are you" in user_input_lower
+    or "tell me about yourself" in user_input_lower
+):
     response = (
         "I'm Planty, a factual botanical assistant. "
-        "I answer questions about plants, herbs, and flowers based on the documents in my knowledge base. "
-        "You can ask me about plant uses, families, growing conditions, seasonality, and distribution. "
+        "I answer questions about plants, herbs, and flowers based on the documents in my knowledge base."
     )
+
+elif (
+    "what can you do" in user_input_lower
+    or "what can you help me with" in user_input_lower
+):
+    response = (
+        "I can answer questions about plant uses, families, growing conditions, seasonality, and distribution."
+    )
+
 else:
     response = str(chat_engine.chat(user_input))
 
-if "which plants do you know" in user_input_lower or "what plants do you know" in user_input_lower:
-    response = (
-        "I currently have information about several plants, herbs, flowers, crops, and trees in my knowledge base. "
-        "You can ask me specific question about any plant included in the uploaded documents. "
-    )
 
 
 #-------------------------------------------------
