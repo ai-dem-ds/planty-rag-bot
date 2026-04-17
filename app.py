@@ -29,7 +29,7 @@
 #-------------------------------------------------
 
 import streamlit as st
-import pathlib as Path
+from pathlib import Path
 
 from src.engine import get_chat_engine
 from src.model_loader import initialise_llm, get_embedding_model
@@ -119,13 +119,48 @@ user_input = st.text_input("Enter your plant question here:")
 
 if st.button("Ask Planty 🌿"):
     if user_input.strip():
-        response = chat_engine.chat(user_input)
+        user_input_lower = user_input.lower().strip()
 
-        st.markdown("### Planty's Answer")
+        if (
+            "which plants do you know" in user_input_lower
+            or "what plants do you know" in user_input_lower
+            or "what flowers do you know" in user_input_lower
+            or "what herbs do you know" in user_input_lower
+            or "what information do you have" in user_input_lower
+        ):
+            plant_names = get_available_plants()
+            response = (
+                "I currently have information about the following plants, herbs, flowers, crops, and trees:\n\n- "
+                + "\n- ".join(plant_names)
+            )
+
+        elif (
+            "who are you" in user_input_lower
+            or "what are you" in user_input_lower
+            or "tell me about yourself" in user_input_lower
+        ):
+            response = (
+                "I'm Planty, a factual botanical assistant. "
+                "I answer questions about plants, herbs, and flowers based on the documents in my knowledge base."
+            )
+
+        elif (
+            "what can you do" in user_input_lower
+            or "what can you help me with" in user_input_lower
+        ):
+            response = (
+                "I can answer questions about plant uses, families, growing conditions, seasonality, and distribution."
+            )
+
+        else:
+            response = str(chat_engine.chat(user_input))
+
+        st.markdown("## Planty's Answer")
         st.markdown(
-            f"<div class='planty-box'>{str(response)}</div>",
+            f"<div class='planty-box'>{response}</div>",
             unsafe_allow_html=True
         )
+
     else:
         st.warning("Please enter a question first.")
 
@@ -167,4 +202,3 @@ elif (
 else:
     response = str(chat_engine.chat(user_input))
 
-    
