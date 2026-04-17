@@ -6,3 +6,4 @@ llama-index-embeddings-huggingface
 sentence-tranformers
 transformers
 torch
+huggingface-hub

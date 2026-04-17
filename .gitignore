@@ -5,6 +5,7 @@ __pycache__/
 .streamlit/secrets.toml
 *.pyc
 .DS_Store
+environment.yml
 
 evaluation/evaluation_results/
 evaluation/evaluation_vector_stores/
